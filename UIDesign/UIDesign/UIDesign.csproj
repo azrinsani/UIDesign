@@ -64,11 +64,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\azutil-core\_azutil-core.csproj" />
-    <ProjectReference Include="..\..\..\ContactManager\ContactManager.Core\ContactManager.Core.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PropertyPageSchema Remove="Content.xaml" />
   </ItemGroup>
 
@@ -123,6 +118,11 @@
     <EmbeddedResource Include="img\unfold_lesss.png" />
     <EmbeddedResource Include="img\unfold_mores.png" />
     <EmbeddedResource Include="img\view_list.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\azutil-core\_azutil-core.csproj" />
+    <ProjectReference Include="..\ContactManager.Core\ContactManager.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>
