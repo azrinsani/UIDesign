@@ -1,0 +1,72 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://xamarin.com/schemas/2014/forms" xmlns:converters="clr-namespace:ContactManager.Converters;assembly=ContactManager.Core"
+             xmlns:res="clr-namespace:ContactManager.Core.Properties;assembly=ContactManager.Core"  CompressedLayout.IsHeadless="True"
+             xmlns:views="clr-namespace:ContactManager.Views" xmlns:local="clr-namespace:UIDesign" x:Class="UIDesign.ContentV"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:vm="clr-namespace:ContactManager.ViewModels;assembly=ContactManager.Core"
+             x:DataType="vm:AppViewModel"  >
+    <ContentView.Resources>
+        <converters:BoolTrueToFalseConverter x:Key="BoolTrueToFalseConverter" />
+        <converters:ContactActionNoneToFalseConverter x:Key="ContactActionNoneToFalseConverter" />
+        <converters:ContactActionNoneOrDoneToFalseConverter x:Key="ContactActionNoneOrDoneToFalseConverter" />
+    </ContentView.Resources>
+    <ContentView.Content>
+        <Grid x:Name="gdContacts" RowSpacing="0" ColumnSpacing="0" Padding="0" CompressedLayout.IsHeadless="True">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="55" />
+            </Grid.RowDefinitions>
+
+            <RefreshView Margin="0,0,0,0" Grid.Row="0" Padding="5,0,5,0" IsEnabled="{Binding ShowLoading, Mode=OneWay,Converter={StaticResource BoolTrueToFalseConverter}}" Command="{Binding ContactsFullRefreshCommand}">
+                <CollectionView ItemsSource="{Binding ContactViews, Mode=OneWay}" IsEnabled="{Binding ShowLoading, Mode=OneWay,Converter={StaticResource BoolTrueToFalseConverter}}"
+                                ItemSizingStrategy="MeasureAllItems">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <views:Contact />
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                    <CollectionView.ItemsLayout>
+                        <LinearItemsLayout Orientation="Vertical" />
+                    </CollectionView.ItemsLayout>
+                </CollectionView>
+            </RefreshView>
+
+
+            <!--Bottom Bar - Search Button -->
+            <BoxView Grid.Row="1" Color="#ddd" VerticalOptions="Start" HeightRequest="1" />
+
+            <FlexLayout Grid.Row="1" Margin="0,1,0,0" Padding="0" Direction="Row"  JustifyContent="SpaceBetween" BackgroundColor="#fff"  >
+                <Button Opacity="0.6" ImageSource="{local:ImageResource UIDesign.img.searchb.png}"  ContentLayout="Top,-15" Margin="0" Padding="0"  TextTransform="None" Text="{x:Static res:AppResources.Search}" TextColor="#000" 
+                        BackgroundColor="#fff" />
+                <Button Opacity="0.6" ImageSource="{local:ImageResource UIDesign.img.settingsb.png}" ContentLayout="Top,-15" Margin="0" Padding="0"  TextTransform="None" Text="Settings" TextColor="#000" 
+                        BackgroundColor="#fff"  />
+            </FlexLayout>
+
+
+            <!--Loading Screen-->
+            <Grid IsVisible="{Binding ShowLoading, Mode=OneWay}" BackgroundColor="#c6dbec" Grid.Row="0" Padding="20" Grid.RowSpan="2">
+                <Grid.Triggers>
+                    <DataTrigger TargetType="Grid" Binding="{Binding ShowLoading, Mode=OneWay}" Value="True">
+                        <DataTrigger.EnterActions>
+                            <views:FadeInAnimation Action="True" Duration="450" />
+                        </DataTrigger.EnterActions>
+                    </DataTrigger>
+                    <DataTrigger TargetType="Grid" Binding="{Binding ShowLoading, Mode=OneWay}" Value="False">
+                        <DataTrigger.EnterActions>
+                            <views:FadeOutAnimation Action="True" Duration="300" />
+                        </DataTrigger.EnterActions>
+                    </DataTrigger>
+                </Grid.Triggers>
+                <StackLayout VerticalOptions="Center">
+                    <StackLayout Orientation="Horizontal" HorizontalOptions="Center">
+                        <ActivityIndicator IsRunning="{Binding ShowLoading, Mode=OneWay}" Color="#537bac" >
+                            <!--<ActivityIndicator.Scale>
+                                <OnPlatform x:TypeArguments="x:Double" iOS="1" Android="2" />
+                            </ActivityIndicator.Scale>-->
+                        </ActivityIndicator>
+                        <Label Text="{x:Static res:AppResources.Refreshing}" Margin="0" FontSize="Large" VerticalTextAlignment="Center" TextColor="#537bac" />
+                    </StackLayout>
+                </StackLayout>
+            </Grid>
+        </Grid>
+    </ContentView.Content>
+</ContentView>

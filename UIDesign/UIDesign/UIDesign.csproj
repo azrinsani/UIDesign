@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>netstandard2.1</TargetFramework>
     <ProduceReferenceAssembly>true</ProduceReferenceAssembly>
   </PropertyGroup>
 
@@ -11,7 +11,129 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <EmbeddedResource Remove="Content.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="img\add.png" />
+    <None Remove="img\addb.png" />
+    <None Remove="img\addbs.png" />
+    <None Remove="img\addcircle.png" />
+    <None Remove="img\adduser.png" />
+    <None Remove="img\cancel.png" />
+    <None Remove="img\check.png" />
+    <None Remove="img\close.png" />
+    <None Remove="img\contactwp.png" />
+    <None Remove="img\contactwpblue.png" />
+    <None Remove="img\content_copy.png" />
+    <None Remove="img\delete.png" />
+    <None Remove="img\email.png" />
+    <None Remove="img\expand_less.png" />
+    <None Remove="img\expand_lessb.png" />
+    <None Remove="img\expand_more.png" />
+    <None Remove="img\expand_moreb.png" />
+    <None Remove="img\location.png" />
+    <None Remove="img\more_horiz.png" />
+    <None Remove="img\more_vert.png" />
+    <None Remove="img\navigation.png" />
+    <None Remove="img\person.png" />
+    <None Remove="img\phone.png" />
+    <None Remove="img\refresh.png" />
+    <None Remove="img\save.png" />
+    <None Remove="img\search.png" />
+    <None Remove="img\searchb.png" />
+    <None Remove="img\searchbs.png" />
+    <None Remove="img\settings.png" />
+    <None Remove="img\settingsb.png" />
+    <None Remove="img\settingsbs.png" />
+    <None Remove="img\sms.png" />
+    <None Remove="img\sms_simple.png" />
+    <None Remove="img\star.png" />
+    <None Remove="img\starb.png" />
+    <None Remove="img\starbs.png" />
+    <None Remove="img\undo.png" />
+    <None Remove="img\unfold_lesss.png" />
+    <None Remove="img\unfold_mores.png" />
+    <None Remove="img\view_list.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="RandomNameGeneratorLibrary" Version="1.2.2" />
     <PackageReference Include="Xamarin.Forms" Version="5.0.0.2012" />
     <PackageReference Include="Xamarin.Essentials" Version="1.6.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\azutil-core\_azutil-core.csproj" />
+    <ProjectReference Include="..\..\..\ContactManager\ContactManager.Core\ContactManager.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PropertyPageSchema Remove="Content.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Include="Content.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PropertyPageSchema Remove="Content.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="img\add.png" />
+    <EmbeddedResource Include="img\addb.png" />
+    <EmbeddedResource Include="img\addbs.png" />
+    <EmbeddedResource Include="img\addcircle.png" />
+    <EmbeddedResource Include="img\adduser.png" />
+    <EmbeddedResource Include="img\cancel.png" />
+    <EmbeddedResource Include="img\check.png" />
+    <EmbeddedResource Include="img\close.png" />
+    <EmbeddedResource Include="img\contactwp.png" />
+    <EmbeddedResource Include="img\contactwpblue.png" />
+    <EmbeddedResource Include="img\content_copy.png" />
+    <EmbeddedResource Include="img\delete.png" />
+    <EmbeddedResource Include="img\email.png" />
+    <EmbeddedResource Include="img\expand_less.png" />
+    <EmbeddedResource Include="img\expand_lessb.png" />
+    <EmbeddedResource Include="img\expand_more.png" />
+    <EmbeddedResource Include="img\expand_moreb.png" />
+    <EmbeddedResource Include="img\location.png" />
+    <EmbeddedResource Include="img\more_horiz.png" />
+    <EmbeddedResource Include="img\more_vert.png" />
+    <EmbeddedResource Include="img\navigation.png" />
+    <EmbeddedResource Include="img\person.png" />
+    <EmbeddedResource Include="img\phone.png" />
+    <EmbeddedResource Include="img\refresh.png" />
+    <EmbeddedResource Include="img\save.png" />
+    <EmbeddedResource Include="img\search.png" />
+    <EmbeddedResource Include="img\searchb.png" />
+    <EmbeddedResource Include="img\searchbs.png" />
+    <EmbeddedResource Include="img\settings.png" />
+    <EmbeddedResource Include="img\settingsb.png" />
+    <EmbeddedResource Include="img\settingsbs.png" />
+    <EmbeddedResource Include="img\sms.png" />
+    <EmbeddedResource Include="img\sms_simple.png" />
+    <EmbeddedResource Include="img\star.png" />
+    <EmbeddedResource Include="img\starb.png" />
+    <EmbeddedResource Include="img\starbs.png" />
+    <EmbeddedResource Include="img\undo.png" />
+    <EmbeddedResource Include="img\unfold_lesss.png" />
+    <EmbeddedResource Include="img\unfold_mores.png" />
+    <EmbeddedResource Include="img\view_list.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Views\ContentView.xaml.cs">
+      <DependentUpon>ContentView.xaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Views\Contact.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </EmbeddedResource>
   </ItemGroup>
 </Project>

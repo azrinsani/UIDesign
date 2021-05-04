@@ -1,0 +1,326 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://xamarin.com/schemas/2014/forms" xmlns:converters="clr-namespace:ContactManager.Converters;assembly=ContactManager.Core"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:xct="http://xamarin.com/schemas/2020/toolkit" 
+             xmlns:vm="clr-namespace:ContactManager.ViewModels;assembly=ContactManager.Core" xmlns:views="clr-namespace:ContactManager.Views"
+             xmlns:local="clr-namespace:UIDesign" x:DataType="vm:ContactViewModel" xmlns:res="clr-namespace:ContactManager.Core.Properties;assembly=ContactManager.Core"
+             x:Class="ContactManager.Views.Contact">
+    <ContentView.Resources>
+        <converters:BoolTrueToOpacityLowConverter x:Key="BoolTrueToOpacityLowConverter" />
+        <converters:BoolTrueToFalseConverter x:Key="BoolTrueToFalseConverter" />
+        <converters:ContactActionNoneToFalseConverter x:Key="ContactActionNoneToFalseConverter" />
+        <converters:ContactActionNoneOrDoneToFalseConverter x:Key="ContactActionNoneOrDoneToFalseConverter" />
+        <converters:StringNullOrEmptyToFalse x:Key="StringNullOrEmptyToFalse" />
+        <DataTemplate x:Key="ContactShowHideGroups" x:DataType="vm:GroupMembershipViewModel">
+            <Button HorizontalOptions="Center" VerticalOptions="Center" Grid.Column="1" Margin="2,0,2,4" Padding="2,0,2,0" BorderWidth="1" TextTransform="None" HeightRequest="33"
+                CornerRadius="5" Command="{Binding Contact.MoreGroupsTappedCommand, Mode=OneTime}" BackgroundColor="#fff" TextColor="#3978c6" BorderColor="#9fbbdf">
+                <Button.Triggers>
+                    <DataTrigger TargetType="Button" Binding="{Binding Contact.ShowMoreGroups, Mode=OneWay}" Value="True">
+                        <Setter Property="Text" Value="{x:Static res:AppResources.GroupsLess}" />
+                    </DataTrigger>
+                    <DataTrigger TargetType="Button" Binding="{Binding Contact.ShowMoreGroups, Mode=OneWay}" Value="False">
+                        <Setter Property="Text" Value="{x:Static res:AppResources.GroupsMore}" />
+                    </DataTrigger>
+                </Button.Triggers>
+            </Button>
+        </DataTemplate>
+        <DataTemplate x:Key="ContactNewGroup" x:DataType="vm:GroupMembershipViewModel">
+            <Button HorizontalOptions="Center" Grid.Column="0" VerticalOptions="Center" Margin="2,0,2,4" Padding="2,0,2,0" BorderWidth="1" TextTransform="None" HeightRequest="33"
+                CornerRadius="5" Text="{x:Static res:AppResources.GroupNew}" Command="{Binding Contact.AddNewGroupCommand, Mode=OneTime}" BackgroundColor="#fff" TextColor="#3978c6" BorderColor="#9fbbdf">
+            </Button>
+        </DataTemplate>
+    </ContentView.Resources>
+
+    <Grid Padding="0" RowSpacing="0" ColumnSpacing="0" Margin="0,0,0,30">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- Undo Button-->
+        <!--<Frame Grid.Row="0" Padding="5,0,5,0" Margin="20,0,20,-10" BackgroundColor="#2e609e" HorizontalOptions="End" HasShadow="False" CornerRadius="10">
+            <Frame.Triggers>
+                <DataTrigger TargetType="Frame" Binding="{Binding Edited, Mode=OneWay}" Value="True">
+                    <DataTrigger.EnterActions>
+                        <views:FadeInAnimation Action="True" Duration="150" />
+                    </DataTrigger.EnterActions>
+                </DataTrigger>
+                <DataTrigger TargetType="Frame" Binding="{Binding Edited, Mode=OneWay}" Value="False">
+                    <DataTrigger.EnterActions>
+                        <views:FadeOutAnimation Action="True" Duration="150" />
+                    </DataTrigger.EnterActions>
+                </DataTrigger>
+            </Frame.Triggers>
+            <Button Grid.Column="0" Text="{x:Static res:AppResources.Undo}" TextColor="#FFF" VerticalOptions="Start" BackgroundColor="Transparent" HeightRequest="42" ImageSource="{local:ImageResource UIDesign.img.undo.png}" Command="{Binding UndoTappedCommand, Mode=OneTime}" />
+        </Frame>-->
+
+        
+        <!--Main Contact Card-->
+        <Frame Grid.Row="1" CornerRadius="10" Padding="0,0,0,5" HasShadow="False" BackgroundColor="#fff">
+            <StackLayout Spacing="0" Padding="0" Margin="0">
+                
+                <!--Top Contact Bar (Thumbnail, Phone, Delete)-->
+                <Grid HeightRequest="28" Margin="0" Padding="2" BackgroundColor="#537bac" ColumnSpacing="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="28" />
+                        <ColumnDefinition Width="26" />
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="110" />
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="54" />
+                    </Grid.ColumnDefinitions>
+                    <!--Star-->
+                    <ContentView Grid.Column="0" WidthRequest="28">
+                        <ImageButton Grid.Column="0" Source="{local:ImageResource UIDesign.img.star.png}" Padding="0" Margin="0" WidthRequest="28" CornerRadius="40" Command="{Binding StarTappedCommand, Mode=OneTime}">
+                            <ImageButton.Triggers>
+                                <DataTrigger TargetType="ImageButton" Binding="{Binding Starred, Mode=OneWay}" Value="True">
+                                    <Setter Property="BackgroundColor" Value="#d2a02d" />
+                                </DataTrigger>
+                                <DataTrigger TargetType="ImageButton" Binding="{Binding Starred, Mode=OneWay}" Value="False">
+                                    <Setter Property="BackgroundColor" Value="#b3b3b3" />
+                                </DataTrigger>
+                            </ImageButton.Triggers>
+                        </ImageButton>
+                    </ContentView>
+                    
+                    <!--Photo Thumbnail-->
+                    <ContentView Grid.Column="1" WidthRequest="26">
+                        <ImageButton Grid.Column="0" WidthRequest="28" Margin="-2, 0, 0,0"  Source="{Binding Thumbnail, Mode=OneTime}" Aspect="AspectFill" IsVisible="{Binding PhotoThumbUri, Mode=OneWay,Converter={StaticResource StringNullOrEmptyToFalse}}"
+                                CornerRadius="40" Padding="0" Command="{Binding StarTappedCommand, Mode=OneTime}"/>
+                    </ContentView>
+                   
+
+                    <ContentView WidthRequest="54" Grid.Column="5">
+                        <ImageButton Source="{local:ImageResource UIDesign.img.close.png}" Margin="0" Padding="3" BackgroundColor="#9f6060" Aspect="AspectFill" CornerRadius="40" WidthRequest="28" HorizontalOptions="End" Command="{Binding DeleteTappedCommand, Mode=OneTime}" />
+                    </ContentView>
+                </Grid>
+                    
+                <!--Name -->
+                <Grid RowSpacing="0" ColumnSpacing="0" BackgroundColor="#c9d7e8" Padding="0" Margin="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="30" />
+                    </Grid.ColumnDefinitions>
+                    <!--Name Drop Down-->
+                    <local:CustomAutoWrapEditor x:Name="Name" Margin="2,2,2,0" Grid.Column="0" CapsMode="CapWords" Text="{Binding Name, Mode=TwoWay}" IsVisible="{Binding ShowNameDropDown, Mode=OneWay, Converter={StaticResource BoolTrueToFalseConverter}}" TextColor="#242424" IsSpellCheckEnabled="False" IsTextPredictionEnabled="False" Placeholder="Full Name"
+                                             PlaceholderColor="#809ec2" AutoSize="TextChanges" FontAttributes="Bold" FontSize="Medium" />
+                    <Grid Grid.Column="1" Padding="0" Margin="0">
+                        <Grid.GestureRecognizers>
+                            <TapGestureRecognizer  Tapped="Name_Tapped" />
+                        </Grid.GestureRecognizers>
+                    </Grid>
+                    <!--Name Drop Down Icon -->
+                    <ImageButton Command="{Binding NameDropDownTappedCommand, Mode=OneTime}" CornerRadius="0" BackgroundColor="#abc9ed" Grid.Column="2" Source="{local:ImageResource UIDesign.img.expand_moreb.png}" Margin="0" Padding="0" Aspect="AspectFit" HeightRequest="24">
+                        <ImageButton.Triggers>
+                            <DataTrigger TargetType="ImageButton" Binding="{Binding ShowNameDropDown}" Value="True">
+                                <Setter Property="Source" Value="{local:ImageResource UIDesign.img.expand_lessb.png}" />
+                            </DataTrigger>
+                            <DataTrigger TargetType="ImageButton" Binding="{Binding ShowNameDropDown}" Value="False">
+                                <Setter Property="Source" Value="{local:ImageResource UIDesign.img.expand_moreb.png}" />
+                            </DataTrigger>
+                        </ImageButton.Triggers>
+                    </ImageButton>
+
+                </Grid>
+
+                <!--Company and Job-->
+                <StackLayout BackgroundColor="#c9d7e8" Spacing="0" Padding="0" Margin="0" >
+                    <local:CustomAutoWrapEditor IsVisible="{Binding ShowCompany}"  Text="{Binding Company, Mode=TwoWay}" Margin="2,-4,2,0" CapsMode="CapWords" PlaceholderColor="#9fb1c6" 
+                                    FontSize="Small" Placeholder="{x:Static res:AppResources.Company}" AutoSize="TextChanges" FontAttributes="Bold"
+                                    TextColor="#808080" IsTextPredictionEnabled="False" IsSpellCheckEnabled="False">
+                    </local:CustomAutoWrapEditor>
+
+                    <local:CustomAutoWrapEditor IsVisible="{Binding ShowJob}" Text="{Binding Job, Mode=TwoWay}" Margin="2,-4,2,0" CapsMode="CapWords" PlaceholderColor="#9fb1c6"
+                                FontSize="Small" Placeholder="{x:Static res:AppResources.Job}"  AutoSize="TextChanges" 
+                                TextColor="#808080" IsTextPredictionEnabled="False" IsSpellCheckEnabled="False">
+                    </local:CustomAutoWrapEditor>
+                </StackLayout>
+
+                <!--GROUPS - See ContactGroup.xaml and ContactAddGroup.xaml -->
+                <local:CustomFlexLayout x:Name="flexLayout" Margin="0" Padding="2,4,2,0" Wrap="Wrap" JustifyContent="Start" AlignContent="Start" AlignItems="Start">
+                    <Button FontSize="Small" TextTransform="None" Text="Button 1" TextColor="#fff" BackgroundColor="#4079bf" Margin="2,0,2,4" Padding="10,0,10,0" HeightRequest="32" CornerRadius="5" />
+                    <Button FontSize="Small" TextTransform="None" Text="Button 2" TextColor="#fff" BackgroundColor="#4079bf" Margin="2,0,2,4" Padding="10,0,10,0" HeightRequest="32" CornerRadius="5" />
+                    <Button FontSize="Small" TextTransform="None" Text="Button 3" TextColor="#fff" BackgroundColor="#4079bf" Margin="2,0,2,4" Padding="10,0,10,0" HeightRequest="32" CornerRadius="5" />
+                    <Button FontSize="Small" TextTransform="None" Text="Button 4" TextColor="#fff" BackgroundColor="#4079bf" Margin="2,0,2,4" Padding="10,0,10,0" HeightRequest="32" CornerRadius="5" />
+                    <Button FontSize="Small" TextTransform="None" Text="Button 6" TextColor="#fff" BackgroundColor="#4079bf" Margin="2,0,2,4" Padding="10,0,10,0" HeightRequest="32" CornerRadius="5" />
+                    <Button FontSize="Small" TextTransform="None" Text="Button 7" TextColor="#fff" BackgroundColor="#4079bf" Margin="2,0,2,4" Padding="10,0,10,0" HeightRequest="32" CornerRadius="5" />
+                    <Button FontSize="Small" TextTransform="None" Text="Button 8" TextColor="#fff" BackgroundColor="#4079bf" Margin="2,0,2,4" Padding="10,0,10,0" HeightRequest="32" CornerRadius="5" />
+                    <Button FontSize="Small" TextTransform="None" Text="Button 9" TextColor="#fff" BackgroundColor="#4079bf" Margin="2,0,2,4" Padding="10,0,10,0" HeightRequest="32" CornerRadius="5" />
+                    <Button FontSize="Small" TextTransform="None" Text="Button 10" TextColor="#fff" BackgroundColor="#4079bf" Margin="2,0,2,4" Padding="10,0,10,0" HeightRequest="32" CornerRadius="5" />
+                    <Button FontSize="Small" TextTransform="None" Text="Button 11" TextColor="#fff" BackgroundColor="#4079bf" Margin="2,0,2,4" Padding="10,0,10,0" HeightRequest="32" CornerRadius="5" />
+                    <Button FontSize="Small" TextTransform="None" Text="Button 12" TextColor="#fff" BackgroundColor="#4079bf" Margin="2,0,2,4" Padding="10,0,10,0" HeightRequest="32" CornerRadius="5" />
+                </local:CustomFlexLayout>
+
+
+                <!--Details-->
+                <local:CustomFlexLayout Wrap="Wrap" JustifyContent="Start" AlignContent="Start" AlignItems="Start" Padding="2,10,2,0" Margin="0">
+                    
+                    <!--Phone Number-->
+                    <StackLayout  Margin="2.5,0,2.5,7" Spacing="0" Padding="0" >
+                        <StackLayout Orientation="Horizontal" Spacing="0" Margin="0,0,0,1" CompressedLayout.IsHeadless="True">
+                            <BoxView WidthRequest="3" Color="#d5e3f6" Margin="0" />
+                            <Label Padding="0" FontSize="Small" TextColor="#808080" Margin="2,0,5,0" VerticalTextAlignment="Center"><!--VerticalOptions="Center">-->
+                                <Label.FormattedText>
+                                    <FormattedString>
+                                        <Span Text="{x:Static res:AppResources.Phone}" FontAttributes="Bold" />
+                                        <Span Text="{x:Static local:App.NewLine}" />
+                                        <Span Text="Work" FontAttributes="None" />
+                                    </FormattedString>
+                                </Label.FormattedText>
+                            </Label>
+                            <ImageButton Source="{local:ImageResource UIDesign.img.phone.png}" Margin="0,0,4,0" Padding="4" BackgroundColor="#609f60" Aspect="AspectFill" VerticalOptions="Center" CornerRadius="40" HeightRequest="28" />
+                            <ImageButton Source="{local:ImageResource UIDesign.img.sms.png}" Margin="0,0,4,0" Padding="4" BackgroundColor="#9f9f60" Aspect="AspectFill" VerticalOptions="Center" CornerRadius="40" HeightRequest="28" />
+                        </StackLayout>
+                        <local:CustomEditor Text="+3244232423" TextColor="#242424" FontSize="Small" IsSpellCheckEnabled="False" IsTextPredictionEnabled="False" SelectAllOnFocus="True" ReturnType="Next" 
+                                            AndroidInputType="ClassPhone" BackgroundColor="#eff2f5" AutoSize="TextChanges" />
+                    </StackLayout>
+
+
+                    <!--Email-->
+                    <StackLayout   Margin="2.5,0,2.5,7" Spacing="0" Padding="0" >
+                        <StackLayout Orientation="Horizontal" Spacing="0" Margin="0,0,0,1" CompressedLayout.IsHeadless="True" >
+                            <BoxView WidthRequest="3" Color="#d5e3f6" Margin="0" />
+                            <Label Padding="0" Margin="2,0,5,0"  FontSize="Small" TextColor="#808080" VerticalTextAlignment="Center"> <!--VerticalOptions="Center">-->
+                                <Label.FormattedText>
+                                    <FormattedString>
+                                        <Span Text="{x:Static res:AppResources.Email}" FontAttributes="Bold" />
+                                        <Span Text="{x:Static local:App.NewLine}" />
+                                        <Span Text="Work" FontAttributes="None" />
+                                    </FormattedString>
+                                </Label.FormattedText>
+                            </Label>
+                            <ImageButton Source="{local:ImageResource UIDesign.img.email.png}" Margin="0,0,4,0" Padding="3" BackgroundColor="#9f8e60" Aspect="AspectFill" CornerRadius="40" VerticalOptions="Center" HeightRequest="28" />
+                            <ImageButton Source="{local:ImageResource UIDesign.img.content_copy.png}" Margin="0,0,4,0" Padding="5" BackgroundColor="#60839f" Aspect="AspectFill" CornerRadius="40" VerticalOptions="Center" HeightRequest="28" />
+                        </StackLayout>
+                        <local:CustomEditor Text="adsadsa@gmail.com" IsSpellCheckEnabled="False" IsTextPredictionEnabled="False" AndroidInputType="TextVariationEmailAddress" SelectAllOnFocus="True" ReturnType="Next" BackgroundColor="#eff2f5" TextColor="#242424" FontSize="Small" AutoSize="TextChanges" />
+                    </StackLayout>
+
+                    <!--Address-->
+                    <StackLayout  Margin="2.5,0,2.5,7" Spacing="0" Padding="0" >
+                        <StackLayout Orientation="Horizontal" Spacing="0" Margin="0,0,0,1" CompressedLayout.IsHeadless="True" >
+                            <BoxView WidthRequest="3" Color="#d5e3f6" Margin="0" />
+                            <Label Padding="0" Margin="2,0,5,0" FontSize="Small" TextColor="#808080" VerticalTextAlignment="Center"> <!--VerticalOptions="Center">-->
+                                <Label.FormattedText>
+                                    <FormattedString>
+                                        <Span Text="{x:Static res:AppResources.Address}" FontAttributes="Bold" />
+                                        <Span Text="{x:Static local:App.NewLine}" />
+                                        <Span Text="Work" FontAttributes="None" />
+                                    </FormattedString>
+                                </Label.FormattedText>
+                            </Label>
+                            <ImageButton  Source="{local:ImageResource UIDesign.img.navigation.png}" Margin="0,0,4,0" Padding="3" BackgroundColor="#60999f" Aspect="AspectFill" CornerRadius="40" VerticalOptions="Center" HeightRequest="28" />
+                        </StackLayout>
+                        <local:CustomAutoWrapEditor Text="Some cave in the middle of the jungle" BackgroundColor="#f2f2f2" CapsMode="CapWords" IsSpellCheckEnabled="False" IsTextPredictionEnabled="False" TextColor="#242424" FontSize="Small" AutoSize="TextChanges" />
+                    </StackLayout>
+                </local:CustomFlexLayout>
+
+               
+                <!--Add Buttons-->
+                <FlexLayout IsVisible="{Binding ShowMore, Mode=OneWay}" Wrap="Wrap" JustifyContent="Start" AlignContent="Start" AlignItems="Start" Margin="0" Padding="2,0,2,10">
+
+                    <!--Add Phone-->
+                    <Button Margin="2,0,2,4" Padding="10,0,10,0" BorderWidth="1" TextTransform="None" HeightRequest="31" 
+                        Text="{x:Static res:AppResources.PhoneAdd}" Command="{Binding AddOtherTapped, Mode=OneTime}"  CornerRadius="5" BackgroundColor="#fff" TextColor="#2e609e" BorderColor="#9fbbdf">
+                    </Button>
+
+                    <!--Add Email-->
+                    <Button Margin="2,0,2,4" Padding="10,0,10,0" BorderWidth="1" TextTransform="None" HeightRequest="31" 
+                        Text="{x:Static res:AppResources.EmailAdd}" Command="{Binding AddOtherTapped, Mode=OneTime}"  CornerRadius="5" BackgroundColor="#fff" TextColor="#2e609e" BorderColor="#9fbbdf">
+                    </Button>
+
+                    <!--Add Address-->
+                    <Button Margin="2,0,2,4" Padding="10,0,10,0" BorderWidth="1" TextTransform="None" HeightRequest="31" 
+                        Text="{x:Static res:AppResources.AddressAdd}" Command="{Binding AddOtherTapped, Mode=OneTime}"  CornerRadius="5" BackgroundColor="#fff" TextColor="#2e609e" BorderColor="#9fbbdf">
+                    </Button>
+
+                    <!--Add More-->
+                    <Button Margin="2,0,2,4" Padding="10,0,10,0" BorderWidth="1" TextTransform="None" HeightRequest="31" 
+                        Text="{x:Static res:AppResources.MoreAdd}" Command="{Binding AddOtherTapped, Mode=OneTime}"  CornerRadius="5" BackgroundColor="#fff" TextColor="#2e609e" BorderColor="#9fbbdf">
+                    </Button>
+
+                    
+                    <!--Add Events--><!--
+                    <Button Margin="2,0,2,4" Padding="10,0,10,0" BorderWidth="1" TextTransform="None" HeightRequest="31" 
+                        Text="{x:Static res:AppResources.EventAdd}" Command="{Binding AddOtherTapped, Mode=OneTime}"  CornerRadius="5" BackgroundColor="#fff" TextColor="#2e609e" BorderColor="#9fbbdf">
+                    </Button>-->
+
+                    
+                    <!--Add Website --><!--
+                    <Button Margin="2,0,2,4" Padding="10,0,10,0" BorderWidth="1" TextTransform="None" HeightRequest="31" 
+                        Text="+ Relation" Command="{Binding AddOtherTapped, Mode=OneTime}"  CornerRadius="5" BackgroundColor="#fff" TextColor="#2e609e" BorderColor="#9fbbdf">
+                    </Button>
+
+                    --><!--Add Relation--><!--
+                    <Button Margin="2,0,2,4" Padding="10,0,10,0" BorderWidth="1" TextTransform="None" HeightRequest="31" 
+                        Text="+ Website" Command="{Binding AddOtherTapped, Mode=OneTime}"  CornerRadius="5" BackgroundColor="#fff" TextColor="#2e609e" BorderColor="#9fbbdf">
+                    </Button>-->
+
+                </FlexLayout>
+                
+                <!--Notes-->
+                <Grid RowSpacing="0" ColumnSpacing="0" Padding="5,5,4,0" Margin="0,0,0,1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="5" />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <BoxView Grid.Column="0" WidthRequest="3" Color="#d5e3f6" Margin="0,0,2,0" HeightRequest="28" />
+                    <Label Grid.Column="1"  Text="{x:Static res:AppResources.Notes}" Margin="0,0,2,0" FontSize="Small" FontAttributes="Bold" LineBreakMode="NoWrap" TextColor="#808080" VerticalTextAlignment="Center"/>
+                    <!--VerticalOptions="Center" />-->
+
+                    <!--Add Activity Button-->
+                    <Button Grid.Column="2"  Margin="2,0,2,2" Padding="10,0,10,0" BorderWidth="1" TextTransform="None" HeightRequest="32" HorizontalOptions="End"
+                        Text="{x:Static res:AppResources.ActivityAdd}" Command="{Binding AddActivityTappedCommand, Mode=OneTime}" CornerRadius="5" BackgroundColor="#fff" TextColor="#2e609e" BorderColor="#9fbbdf">
+                    </Button>
+                </Grid>
+                <!--<StackLayout Orientation="Horizontal" Spacing="0" Padding="5,5,4,0" Margin="0,0,0,1">
+                    <BoxView WidthRequest="3" Color="#d5e3f6" Margin="0,0,2,0" HeightRequest="28" />
+                    <Label Text="{x:Static res:AppResources.Notes}" Margin="0,0,2,0" FontSize="Small" FontAttributes="Bold" LineBreakMode="NoWrap" TextColor="#808080" VerticalTextAlignment="Center"/>
+                    --><!--VerticalOptions="Center" />-->
+                    
+                    <!--Add Activity Button--><!--
+                    <Button Margin="2,0,2,2" Padding="10,0,10,0" BorderWidth="1" TextTransform="None" HeightRequest="32"
+                        Text="{x:Static res:AppResources.ActivityAdd}" Command="{Binding AddActivityTappedCommand, Mode=OneTime}" CornerRadius="5" BackgroundColor="#fff" TextColor="#2e609e" BorderColor="#9fbbdf">
+                    </Button>
+                </StackLayout>-->
+                <local:CustomEditor x:Name="cENotes" Margin="5,0,5,10" TextColor="#242424" FontSize="Small" AutoSize="TextChanges" BackgroundColor="#eff2f5" IsSpellCheckEnabled="False" IsTextPredictionEnabled="False"
+                                Text="{Binding Note, Mode=TwoWay}"  />
+                <!--standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum. Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of de Finibus Bonorum et Malorum (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, Lorem ipsum dolor sit amet.., comes from a line in section 1.10.32.
+                                            The standard chunk of Lorem Ipsum used since the 1500s is reproduced below for those interested. Sections 1.10.32 and 1.10.33 from de Finibus Bonorum et Malorum by Cicero are also reproduced in their exact original form, accompanied by English versions from the 1914 translation by H. Rackham." />-->
+
+
+                <!--Stay in Touch Every-->
+                <StackLayout IsVisible="{Binding ShowMore,Mode=OneWay}"  Padding="4.5,0,2.5,7" Spacing="0" Margin="0" VerticalOptions="Center" >
+                    <StackLayout Orientation="Horizontal" Margin="0,0,0,1" Spacing="0" >
+                        <!--<BoxView WidthRequest="3" Color="#d5e3f6" Margin="0"  />-->
+                        <Grid Padding="0" WidthRequest="3" BackgroundColor="#d5e3f6" Margin="0"  />
+                        <!--<Frame Padding="0" WidthRequest="3" BackgroundColor="#d5e3f6" BorderColor="#d5e3f6" Margin="0"  HasShadow="False" CornerRadius="0" />-->
+                        <Label Text="{x:Static res:AppResources.StayInTouch}" Padding="0" Margin="2,0,0,0" FontSize="Small" TextColor="#808080"  FontAttributes="Bold" VerticalTextAlignment="Center" /> <!--VerticalOptions="Center"-->
+                    </StackLayout>
+                    
+                    <local:CustomFlexLayout Wrap="Wrap" Margin="0" Padding="0">
+                        <Button Margin="0,0,-1,0" Padding="5,0,5,0" BorderWidth="1" TextTransform="None"  Text="Yearly" 
+                         Command="{Binding AddOtherTapped, Mode=OneTime}"  CornerRadius="0" BackgroundColor="#fff" TextColor="#2e609e" BorderColor="#9fbbdf">
+                        </Button>
+                        <Button Margin="-1,0,-1,0" Padding="5,0,5,0" BorderWidth="1" TextTransform="None"  Text="4 Months"
+                         Command="{Binding AddOtherTapped, Mode=OneTime}"  CornerRadius="0" BackgroundColor="#fff" TextColor="#2e609e" BorderColor="#9fbbdf">
+                        </Button>
+                        <Button Margin="-1,0,-1,0" Padding="5,0,5,0" BorderWidth="1" TextTransform="None"  Text="1 Month"
+                         Command="{Binding AddOtherTapped, Mode=OneTime}"  CornerRadius="0" BackgroundColor="#fff" TextColor="#2e609e" BorderColor="#9fbbdf">
+                        </Button>
+                        <Button Margin="-1,0,-1,0" Padding="5,0,5,0" BorderWidth="1" TextTransform="None"  Text="Custom"
+                         Command="{Binding AddOtherTapped, Mode=OneTime}"  CornerRadius="0" BackgroundColor="#fff" TextColor="#2e609e" BorderColor="#9fbbdf">
+                        </Button>
+                    </local:CustomFlexLayout>
+                </StackLayout>
+
+
+                
+            </StackLayout>
+        </Frame>
+
+       
+    </Grid>
+
+    
+</ContentView>

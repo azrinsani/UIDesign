@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<TabbedPage xmlns="http://xamarin.com/schemas/2014/forms" Appearing="TabbedPage_Appearing"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:local="clr-namespace:UIDesign"
+             x:Class="UIDesign.MainPage">
+    <NavigationPage Title="Content" CompressedLayout.IsHeadless="True" >
+        <x:Arguments>
+            <ContentPage x:Name="ContentPage" CompressedLayout.IsHeadless="True">
+                <local:ContentV />
+            </ContentPage>
+        </x:Arguments>
+    </NavigationPage>
+    <NavigationPage Title="Settings" CompressedLayout.IsHeadless="True">
+        <x:Arguments>
+            <ContentPage>
+                <Label Text="Settings Page" />
+            </ContentPage>
+        </x:Arguments>
+    </NavigationPage>
+    
+</TabbedPage>
